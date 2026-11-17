@@ -1,0 +1,48 @@
+[
+  {
+    "name": "geocode_address",
+    "description": "把文字地址、地铁站名或地标解析成经纬度坐标。仅在用户给出文字位置、且后续检索需要坐标时调用。输入：address（中文地标名）、city（可选，用于同名地点消歧）。输出：formatted_address / city / location（\"经度,纬度\"）。限制：解析失败时结果里会带 error 字段，此时应向用户追问更明确的地标，不得编造坐标。",
+    "method": "GET",
+    "endpoint": "/v3/geocode/geo",
+    "params": {
+      "address": "用户给出的地点描述",
+      "city": "可选城市名"
+    }
+  },
+  {
+    "name": "search_nearby_places",
+    "description": "以某个坐标为圆心做周边检索。用户问「附近有哪些商场」「某个品牌的门店在哪」时调用。输入：location（\"经度,纬度\"）、keywords、radius（米，默认 5000）、types（找商场固定传 060100，按品牌找门店传空）。输出：按距离升序的 POI 列表（name / address / location / distance_m / tel）。限制：location 必须是地理编码或上一次检索返回的真实坐标；结果为 0 条时如实告知用户。",
+    "method": "GET",
+    "endpoint": "/v3/place/around",
+    "params": {
+      "location": "中心点经纬度",
+      "keywords": "搜索关键词",
+      "radius": "检索半径（米）",
+      "types": "高德 POI 分类码"
+    }
+  },
+  {
+    "name": "calc_distance",
+    "description": "计算两个坐标点之间的距离，用于比较「哪个商场更近」。输入：origin、destination（\"经度,纬度\"）、mode（straight 直线 / driving 驾车）。输出：distance_m、distance_text、驾车时附带 duration_text。限制：所有距离必须以本工具返回值为准，禁止模型自行估算。",
+    "method": "GET",
+    "endpoint": "/v3/distance",
+    "params": {
+      "origins": "起点经纬度",
+      "destination": "终点经纬度",
+      "type": "1 = 直线距离，0 = 驾车距离"
+    }
+  },
+  {
+    "name": "find_malls_with_brands",
+    "description": "【出行决策核心工具】一次完成：定位 → 搜索附近商场 → 逐商场核对品牌门店 → 按满足程度和距离排序。当用户提出「我在 X 附近，想找既有 A 又有 B 的商场，要近的」时优先调用。输入：origin_address、brands（品牌关键词数组）、city（可选）、mall_radius（默认 5000）、brand_radius（默认 800）。输出：origin / searched / matched（满足全部品牌，按距离升序）/ partial（仅命中部分品牌）/ unmatched / note。限制：门店与距离全部来自高德接口；无匹配结果时应结合 note 向用户说明并建议放宽条件。",
+    "method": "GET",
+    "endpoint": "/v3/place/around + /v3/distance（组合调用）",
+    "params": {
+      "origin_address": "用户位置描述",
+      "brands": "必须存在的品牌关键词列表",
+      "city": "可选城市名",
+      "mall_radius": "商场搜索半径（米）",
+      "brand_radius": "商场内品牌核对半径（米）"
+    }
+  }
+]

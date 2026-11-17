@@ -58,20 +58,21 @@ export default function CodeViewer() {
           <L n={4}><Cmt t="# 1. Define tools with @function_tool" /></L>
           <L n={5}><Dec t="@function_tool" /></L>
           <L n={6}>
-            <Kw t="def " /><Fn t="get_weather" /><Op t="(" />
-            <Va t="city" /><Op t=": " /><Ty t="Annotated" /><Op t="[" />
-            <Ty t="str" /><Op t=", " /><Str t='"The city to get weather for"' />
-            <Op t="]) -> " /><Ty t="str" /><Op t=":" />
+            <Kw t="def " /><Fn t="find_malls_with_brands" /><Op t="(" />
+            <Va t="origin_address" /><Op t=": " /><Ty t="Annotated" /><Op t="[" />
+            <Ty t="str" /><Op t=", " /><Str t='"用户的位置描述"' />
+            <Op t="], " /><Va t="brands" /><Op t=": " /><Ty t="list" /><Op t="[" /><Ty t="str" /><Op t="]" />
+            <Op t=") -> " /><Ty t="str" /><Op t=":" />
           </L>
           <L n={7}>
-            <I1><Doc t='"""Get the current weather for a specified city."""' /></I1>
+            <I1><Doc t='"""检索附近商场并核对品牌门店，返回按距离排序的推荐。"""' /></I1>
           </L>
           <L n={8}>
-            <I1><Cmt t="# ..." /></I1>
+            <I1><Cmt t="# 内部调用高德 place/around 与 distance 接口" /></I1>
           </L>
           <L n={9} />
           <L n={10}>
-            <Va t="TOOLS" /><Op t=" = [" /><Fn t="get_weather" /><Op t=", " /><Cmt t="# More tools..." /><Op t="]" />
+            <Va t="TOOLS" /><Op t=" = [" /><Fn t="geocode_address" /><Op t=", " /><Fn t="search_nearby_places" /><Op t=", " /><Fn t="calc_distance" /><Op t=", " /><Fn t="find_malls_with_brands" /><Op t="]" />
           </L>
           <L n={11} />
 

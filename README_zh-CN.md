@@ -1,8 +1,13 @@
-# OpenAI Agents Starter (Python)
+# 出行决策 Agent（基于 OpenAI Agents Starter · Python）
+
+> 本项目 = 上游 `TencentEdgeOne/openai-agent-starter-python` 模板 + 出行决策 Agent 改造。
+> 改造内容：把 4 个演示工具替换为 4 个高德地图工具，让 Agent 能按用户位置检索附近商场、
+> 核对品牌门店、比较距离并给出推荐。改造后的工具见 `agents/_tools.py`，
+> 工具描述见 `api-schema.json`，Agent 人设见 `agents/chat/index.py` 的 `SYSTEM_INSTRUCTIONS`。
 
 跑在 EdgeOne Makers 上的全栈 Python Agent 模板：基于 OpenAI Agents SDK（Python）的流式聊天，包含自定义工具与基于 `context.store` 的会话记忆。
 
-**Framework：** OpenAI Agents SDK · **Category：** Quick Start <!-- TODO: confirm --> · **Language：** Python
+**Framework：** OpenAI Agents SDK · **Category：** Quick Start · **Language：** Python
 
 [![Deploy to EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://console.cloud.tencent.com/edgeone/pages/new?template=openai-agents-starter-python)
 
@@ -10,11 +15,11 @@
 
 ## 概述
 
-把 OpenAI Agents SDK（Python）接到 EdgeOne Makers 上的最小但贴近生产形态的模板。完整跑通了流式响应、自定义工具注册、会话存储这条链路，方便你直接 fork，把示例工具（`get_weather`、`get_clothing_advice`、`translate_text`、`text_statistics`）替换成你自己的实现。
+把 OpenAI Agents SDK（Python）接到 EdgeOne Makers 上的最小但贴近生产形态的模板。完整跑通了流式响应、自定义工具注册、会话存储这条链路。
 
 - **SSE 流式聊天** —— 逐 token 推 `text_delta`，命中工具时推 `tool_called`。
-- **自定义 Agent 工具** —— 四个 `@function_tool` 示例，可直接替换。
-- **会话粘性记忆** —— `context.store.openai_session(cid)` 直接喂给 `Runner.run_streamed()` 的 `session` 参数。
+- **自定义 Agent 工具** —— 四个高德地图 `@function_tool`：`geocode_address`、`search_nearby_places`、`calc_distance`、`find_malls_with_brands`。
+- **会话粘性记忆** —— `context.store.openai_session(cid)` 直接喂给 `Runner.run_streamed()` 的 `session` 参数。连续追问时保留上一轮的地点条件。
 - **可信取消** —— 后端 `context.utils.abort_active_run()` 真正中断 LLM 调用。
 - **后端拆两层** —— 有状态的长连接放 `agents/`，无状态的 `/history` 放 `cloud-functions/`。
 
@@ -25,6 +30,7 @@
 | `AI_GATEWAY_API_KEY` | 是 | 模型网关 API Key。可填 Makers Models 的 API Key，也可以是任意 OpenAI 兼容服务商的 Key。 |
 | `AI_GATEWAY_BASE_URL` | 是 | 网关 Base URL。Makers Models 请使用 `https://ai-gateway.edgeone.link/v1`。 |
 | `AI_GATEWAY_MODEL` | 否 | 模型 ID。默认 `@makers/deepseek-v4-flash`（内置免费模型）。 |
+| `AMAP_API_KEY` | 是 | 高德开放平台「Web 服务」类型的 Key，用于检索商场、门店与距离。 |
 
 模板遵循 OpenAI 兼容协议，可以指向 Makers Models，也可以指向任意 OpenAI 兼容的服务商。
 
